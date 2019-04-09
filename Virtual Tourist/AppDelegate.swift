@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Virtual Tourist
 //
-//  Created by MTZ-5555-TRANSP on 09/04/19.
+//  Created by Ranieri Aguiar on 09/04/19.
 //  Copyright © 2019 Ranieri. All rights reserved.
 //
 
