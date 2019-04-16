@@ -20,7 +20,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         
         let uilgr = UILongPressGestureRecognizer(target: self, action: #selector(MKMapView.addAnnotation(_:)))
-        uilgr.minimumPressDuration = 2.0
+        uilgr.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(uilgr)
     }
     
@@ -33,8 +33,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let myPin: MKPointAnnotation = MKPointAnnotation()
         
         myPin.coordinate = myCoordinate
-        myPin.title = "title"
-        myPin.subtitle = "subtitle"
         mapView.addAnnotation(myPin)
     }
     

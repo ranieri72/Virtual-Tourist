@@ -37,6 +37,13 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         photoCollectionView.delegate = self
     }
     
+    func addAnnotation(_ coordinate: CLLocationCoordinate2D) {
+        let myPin: MKPointAnnotation = MKPointAnnotation()
+        
+        myPin.coordinate = coordinate
+        mapView.addAnnotation(myPin)
+    }
+    
     @IBAction func newCollection(_ sender: UIButton) {
     }
     

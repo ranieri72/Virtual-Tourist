@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4Li-vw-V7S">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -10,6 +10,45 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="bzd-WH-YZn">
+            <objects>
+                <viewController id="4Li-vw-V7S" customClass="LoginViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2qY-h0-A99">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="22T-pq-d3O">
+                                <rect key="frame" x="25" y="567" width="325" height="50"/>
+                                <color key="backgroundColor" red="0.90045934920000004" green="0.41317844390000003" blue="0.40739163760000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="qkM-tU-wtg"/>
+                                </constraints>
+                                <state key="normal" title="LOGIN">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="login:" destination="4Li-vw-V7S" eventType="touchUpInside" id="V3J-vU-enz"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.03636638448" green="0.23687756060000001" blue="0.36249732969999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="22T-pq-d3O" firstAttribute="leading" secondItem="6vU-gX-xfC" secondAttribute="leading" constant="25" id="69o-um-c9u"/>
+                            <constraint firstItem="6vU-gX-xfC" firstAttribute="bottom" secondItem="22T-pq-d3O" secondAttribute="bottom" constant="50" id="QWJ-fQ-Yaz"/>
+                            <constraint firstItem="6vU-gX-xfC" firstAttribute="trailing" secondItem="22T-pq-d3O" secondAttribute="trailing" constant="25" id="zd7-fA-zxs"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6vU-gX-xfC"/>
+                    </view>
+                    <connections>
+                        <outlet property="btnLogin" destination="22T-pq-d3O" id="bAl-xo-sEE"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="mapVC" id="GMw-dW-vZk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qcq-qg-iQF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-846" y="27"/>
+        </scene>
         <!--Map View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -19,15 +58,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="l7h-9J-Nee">
-                                <rect key="frame" x="16" y="20" width="343" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="bottomMargin" secondItem="l7h-9J-Nee" secondAttribute="bottom" id="2h0-aI-hjf"/>
-                            <constraint firstItem="l7h-9J-Nee" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="V3Q-rW-Ah1"/>
-                            <constraint firstItem="l7h-9J-Nee" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="r0k-gj-0Qo"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="l7h-9J-Nee" secondAttribute="trailing" id="ulF-ta-qA3"/>
+                            <constraint firstItem="l7h-9J-Nee" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="5Hr-89-8rL"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="l7h-9J-Nee" secondAttribute="trailing" id="Qug-od-NQ4"/>
+                            <constraint firstItem="l7h-9J-Nee" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="cPy-Vp-DDa"/>
+                            <constraint firstItem="l7h-9J-Nee" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottomMargin" id="jT9-0O-WPd"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -64,7 +103,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCollectionViewCell" id="M3D-Jr-dO8" customClass="PhotoCollectionViewCell" customModule="Virtual_Tourist" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PhotoCollectionViewCell" reuseIdentifier="PhotoCollectionViewCell" id="M3D-Jr-dO8" customClass="PhotoCollectionViewCell" customModule="Virtual_Tourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
