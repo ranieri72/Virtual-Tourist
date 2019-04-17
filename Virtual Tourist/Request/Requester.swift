@@ -25,7 +25,7 @@ class Requester {
     
     func doOAuthFlickr(view: UIViewController) {
         Requester.oauthswift.authorizeURLHandler = getURLHandler(view)
-        let _ = Requester.oauthswift.authorize(
+        Requester.oauthswift.authorize(
             withCallbackURL: URL(string: "virtual-tourist://oauth-callback/flickr")!,
             success: { credential, response, parameters in
                 
@@ -33,9 +33,44 @@ class Requester {
                 print(credential.oauthTokenSecret)
                 print(parameters["user_id"] as Any)
                 // Do your request
+                
+                self.getImagesFlickr()
         },
             failure: { error in
                 print(error.description)
+        }
+        )
+    }
+    
+    func getImagesFlickr() {
+        var url = Constants.url
+        
+        var parameters = [String : String]()
+        parameters["method"] = Constants.photosForLocation
+        parameters["api_key"] = Constants.key
+        parameters["lat"] = "-8.057984"
+        parameters["lon"] = "-34.872332"
+        parameters["format"] = Constants.format
+        parameters["nojsoncallback"] = Constants.jsonCallback
+        parameters["auth_token"] = Constants.authToken
+        parameters["api_sig"] = Constants.apiSig
+        
+        for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
+            url.append(key + "=" + value)
+            if index < parameters.count - 1 {
+                url.append("&")
+            }
+        }
+        
+        _ = Requester.oauthswift.client.get(
+            url,
+            success: { response in
+                let dataString = response.dataString(encoding: .utf8)
+                print(response)
+                print(dataString)
+        },
+            failure: { error in
+                print(error)
         }
         )
     }

@@ -14,14 +14,11 @@ class Constants {
     static let key = "13b803f43deaf6283141e04946398b20"
     static let pass = "2d8857aa559c1b17"
     
-    static let url = " https://api.flickr.com/services/rest/?"
-    
-    static let photosForLocation = "method=flickr.photos.geo.photosForLocation&"
-    static let apiKey = "api_key=13b803f43deaf6283141e04946398b20&"
-    static let lat = "lat=-8.057984&"
-    static let long = "lon=-34.872332&"
-    static let format = "format=json&"
-    static let jsonCallback = "nojsoncallback=1&"
-    static let authToken = "auth_token=72157690855891693-1ff37d4d86973846&"
-    static let api = "api_sig=eecc5c506dd8d33527c7fd61eca2dcee"
+    static let url = "https://api.flickr.com/services/rest/?"
+    static let photosForLocation = "flickr.photos.geo.photosForLocation"
+    static let apiKey = "13b803f43deaf6283141e04946398b20"
+    static let format = "json"
+    static let jsonCallback = "1"
+    static let authToken = "72157690855891693-1ff37d4d86973846"
+    static let apiSig = "eecc5c506dd8d33527c7fd61eca2dcee"
 }
