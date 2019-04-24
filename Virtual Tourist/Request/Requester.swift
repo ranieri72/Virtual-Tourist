@@ -29,11 +29,16 @@ class Requester {
             withCallbackURL: URL(string: "virtual-tourist://oauth-callback/flickr")!,
             success: { credential, response, parameters in
                 
-                print(credential.oauthToken)
-                print(credential.oauthTokenSecret)
-                print(parameters["user_id"] as Any)
-                // Do your request
-                
+                let user = User()
+                user.oauthVerifier = credential.oauthVerifier
+                user.oauthToken = credential.oauthToken
+                user.oauthTokenSecret = credential.oauthTokenSecret
+                user.consumerKey = credential.consumerKey
+                user.consumerSecret = credential.consumerSecret
+                user.userNsid = parameters["user_nsid"] as! String
+                user.username = parameters["username"] as! String
+                user.fullname = parameters["fullname"] as! String
+                UserSession.user = user
                 self.getImagesFlickr()
         },
             failure: { error in
@@ -46,14 +51,13 @@ class Requester {
         var url = Constants.url
         
         var parameters = [String : String]()
-        parameters["method"] = Constants.photosForLocation
-        parameters["api_key"] = Constants.key
-        parameters["lat"] = "-8.057984"
-        parameters["lon"] = "-34.872332"
-        parameters["format"] = Constants.format
+        parameters["lat"] = "40.763764"
+        parameters["lon"] = "-73.975562"
         parameters["nojsoncallback"] = Constants.jsonCallback
-        parameters["auth_token"] = Constants.authToken
-        parameters["api_sig"] = Constants.apiSig
+        parameters["format"] = Constants.format
+        parameters["method"] = Constants.photosForLocation
+        parameters["accuracy"] = Constants.accuracy
+        parameters["per_page"] = Constants.per_page
         
         for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
             url.append(key + "=" + value)
@@ -66,8 +70,7 @@ class Requester {
             url,
             success: { response in
                 let dataString = response.dataString(encoding: .utf8)
-                print(response)
-                print(dataString)
+                print(dataString as Any)
         },
             failure: { error in
                 print(error)

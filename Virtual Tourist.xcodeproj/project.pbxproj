@@ -17,6 +17,8 @@
 		4880EBCD2266298A00254E45 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4880EBCC2266298A00254E45 /* LoginViewController.swift */; };
 		4880EBCF2266652B00254E45 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4880EBCE2266652B00254E45 /* Constants.swift */; };
 		4884446D225D57430009C7A2 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4884446C225D57430009C7A2 /* PhotoCollectionViewCell.swift */; };
+		48AFA030226E72D000208A82 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA02F226E72D000208A82 /* UserSession.swift */; };
+		48AFA033226E732100208A82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA032226E732100208A82 /* User.swift */; };
 		F1EB23100D95DE373100D42A /* Pods_Virtual_Tourist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFAA996A3F34569E479EA6F2 /* Pods_Virtual_Tourist.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +35,8 @@
 		4880EBCC2266298A00254E45 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4880EBCE2266652B00254E45 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4884446C225D57430009C7A2 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		48AFA02F226E72D000208A82 /* UserSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
+		48AFA032226E732100208A82 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		67C2D0258EA1575F89F1DDD1 /* Pods-Virtual Tourist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Virtual Tourist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Virtual Tourist/Pods-Virtual Tourist.debug.xcconfig"; sourceTree = "<group>"; };
 		AFAA996A3F34569E479EA6F2 /* Pods_Virtual_Tourist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Virtual_Tourist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB6692DCFA3E6ADA140927D6 /* Pods-Virtual Tourist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Virtual Tourist.release.xcconfig"; path = "Pods/Target Support Files/Pods-Virtual Tourist/Pods-Virtual Tourist.release.xcconfig"; sourceTree = "<group>"; };
@@ -61,6 +65,7 @@
 		4827DC4D2264FD490065F067 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				48AFA02F226E72D000208A82 /* UserSession.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -95,6 +100,7 @@
 		488038F4225CFCF200371BF6 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
+				48AFA031226E730100208A82 /* Entity */,
 				4827DC4D2264FD490065F067 /* Util */,
 				4868E2D5225F9E9400FC3CD7 /* Request */,
 				48803907225D007800371BF6 /* ViewController */,
@@ -116,6 +122,14 @@
 				4880EBCC2266298A00254E45 /* LoginViewController.swift */,
 			);
 			path = ViewController;
+			sourceTree = "<group>";
+		};
+		48AFA031226E730100208A82 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				48AFA032226E732100208A82 /* User.swift */,
+			);
+			path = Entity;
 			sourceTree = "<group>";
 		};
 		D7A006F70193894B332D8EBA /* Pods */ = {
@@ -252,8 +266,10 @@
 				4884446D225D57430009C7A2 /* PhotoCollectionViewCell.swift in Sources */,
 				48803909225D00AC00371BF6 /* MapViewController.swift in Sources */,
 				4880EBCF2266652B00254E45 /* Constants.swift in Sources */,
+				48AFA033226E732100208A82 /* User.swift in Sources */,
 				4868E2D7225F9EB500FC3CD7 /* Requester.swift in Sources */,
 				4880390B225D00E000371BF6 /* PhotoViewController.swift in Sources */,
+				48AFA030226E72D000208A82 /* UserSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
