@@ -37,14 +37,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        performSegue(withIdentifier: viewControllerID, sender: view.annotation?.coordinate)
+        let lat = view.annotation?.coordinate.latitude.description
+        let long = view.annotation?.coordinate.longitude.description
+        
+        func sucess(photos: [Photo]) {
+            performSegue(withIdentifier: viewControllerID, sender: photos)
+        }
+        func fail(msg: String) {
+            presentAlertView(msg: msg)
+        }
+        Requester().getImagesFlickr(lat ?? "0.0", long ?? "0.0", sucess: sucess, fail: fail)
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == viewControllerID {
             let view = segue.destination as! PhotoViewController
-            let location = sender as! CLLocationCoordinate2D
-            view.location = location
+            let photos = sender as! [Photo]
+            view.photos = photos
         }
     }
 }

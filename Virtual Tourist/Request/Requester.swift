@@ -12,6 +12,70 @@ import SafariServices
 
 class Requester {
     
+    func getImagesFlickr(_ lat: String, _ long: String, sucess: @escaping (_ photos: [Photo]) -> Void, fail: @escaping (_ msg: String) -> Void) {
+        let url = getSearchUrl(lat, long)
+        
+        _ = Requester.oauthswift.client.get(
+            url,
+            success: { response in
+                let json1 =  try! JSONSerialization.jsonObject(with: response.data, options: []) as? [String:AnyObject]
+                let json2 = json1?["photos"] as! [String:AnyObject]
+                let json3 = json2["photo"] as! [[String:AnyObject]]
+                var photos = [Photo]()
+                
+                for photoJson in json3 {
+                    let photo = Photo(json: photoJson)
+                    photo.url = self.getPhotoUrl(photo)
+                    photo.lat = lat
+                    photo.long = long
+                    photos.append(photo)
+                }
+                sucess(photos)
+        },
+            failure: { error in
+                print(error)
+        }
+        )
+    }
+    
+    func downloadImages(urlString: String, sucess: @escaping (_ image: UIImage?) -> Void, fail: @escaping (_ msg: String) -> Void) {
+        let url = URL(string: urlString)
+        
+        DispatchQueue.global().async {
+            let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+            DispatchQueue.main.async {
+                sucess(UIImage(data: data!))
+            }
+        }
+    }
+    
+    private func getSearchUrl(_ lat: String, _ long: String) -> String {
+        var url = Constants.url
+        
+        var parameters = [String : String]()
+        parameters["lat"] = lat
+        parameters["lon"] = long
+        parameters["nojsoncallback"] = Constants.jsonCallback
+        parameters["format"] = Constants.format
+        parameters["method"] = Constants.photosSearch
+        parameters["accuracy"] = Constants.accuracy
+        parameters["per_page"] = Constants.per_page
+        
+        for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
+            url.append(key + "=" + value)
+            if index < parameters.count - 1 {
+                url.append("&")
+            }
+        }
+        return url
+    }
+    
+    private func getPhotoUrl(_ photo: Photo) -> String {
+        return String(format: Constants.urlPhoto, photo.farm, photo.server, photo.id, photo.secret, Constants.size)
+    }
+    
+    // MARK: OAuth Flickr
+    
     private static var oauthswift: OAuth1Swift = {
         print("oauthswift foi instanciado")
         return OAuth1Swift(
@@ -39,7 +103,6 @@ class Requester {
                 user.username = parameters["username"] as! String
                 user.fullname = parameters["fullname"] as! String
                 UserSession.user = user
-                self.getImagesFlickr()
         },
             failure: { error in
                 print(error.description)
@@ -47,38 +110,7 @@ class Requester {
         )
     }
     
-    func getImagesFlickr() {
-        var url = Constants.url
-        
-        var parameters = [String : String]()
-        parameters["lat"] = "40.763764"
-        parameters["lon"] = "-73.975562"
-        parameters["nojsoncallback"] = Constants.jsonCallback
-        parameters["format"] = Constants.format
-        parameters["method"] = Constants.photosForLocation
-        parameters["accuracy"] = Constants.accuracy
-        parameters["per_page"] = Constants.per_page
-        
-        for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
-            url.append(key + "=" + value)
-            if index < parameters.count - 1 {
-                url.append("&")
-            }
-        }
-        
-        _ = Requester.oauthswift.client.get(
-            url,
-            success: { response in
-                let dataString = response.dataString(encoding: .utf8)
-                print(dataString as Any)
-        },
-            failure: { error in
-                print(error)
-        }
-        )
-    }
-    
-    func getURLHandler(_ view: UIViewController) -> OAuthSwiftURLHandlerType {
+    private func getURLHandler(_ view: UIViewController) -> OAuthSwiftURLHandlerType {
         
         let handler = SafariURLHandler(viewController: view, oauthSwift: Requester.oauthswift)
         handler.presentCompletion = {

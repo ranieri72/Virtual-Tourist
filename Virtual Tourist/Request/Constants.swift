@@ -11,13 +11,16 @@ class Constants {
     static let authorizeUrl = "https://www.flickr.com/services/oauth/authorize"
     static let accessTokenUrl = "https://www.flickr.com/services/oauth/access_token"
     
+    static let urlPhoto = "https://farm%d.staticflickr.com/%@/%@_%@_%@.jpg"
+    
     static let key = "13b803f43deaf6283141e04946398b20"
     static let pass = "2d8857aa559c1b17"
     
     static let url = "https://api.flickr.com/services/rest/?"
-    static let photosForLocation = "flickr.photos.search"
+    static let photosSearch = "flickr.photos.search"
     static let accuracy = "11"
-    static let per_page = "50"
+    static let per_page = "10"
     static let format = "json"
     static let jsonCallback = "1"
+    static let size = "m"
 }

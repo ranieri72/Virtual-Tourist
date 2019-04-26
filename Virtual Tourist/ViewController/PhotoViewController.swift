@@ -18,7 +18,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     let cellIdentifier = "PhotoCollectionViewCell"
     
-    var location: CLLocationCoordinate2D!
+    var photos: [Photo]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
