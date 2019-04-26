@@ -12,8 +12,8 @@ import SafariServices
 
 class Requester {
     
-    func getImagesFlickr(_ lat: String, _ long: String, sucess: @escaping (_ photos: [Photo]) -> Void, fail: @escaping (_ msg: String) -> Void) {
-        let url = getSearchUrl(lat, long)
+    func getImagesFlickr(_ lat: String, _ long: String, _ page: Int, sucess: @escaping (_ photos: [Photo]) -> Void, fail: @escaping (_ msg: String) -> Void) {
+        let url = getSearchUrl(lat, long, page)
         
         _ = Requester.oauthswift.client.get(
             url,
@@ -49,7 +49,7 @@ class Requester {
         }
     }
     
-    private func getSearchUrl(_ lat: String, _ long: String) -> String {
+    private func getSearchUrl(_ lat: String, _ long: String, _ page: Int) -> String {
         var url = Constants.url
         
         var parameters = [String : String]()
@@ -60,6 +60,7 @@ class Requester {
         parameters["method"] = Constants.photosSearch
         parameters["accuracy"] = Constants.accuracy
         parameters["per_page"] = Constants.per_page
+        parameters["page"] = String(page)
         
         for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
             url.append(key + "=" + value)

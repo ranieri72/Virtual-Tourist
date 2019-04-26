@@ -46,8 +46,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         func fail(msg: String) {
             presentAlertView(msg: msg)
         }
-        Requester().getImagesFlickr(lat ?? "0.0", long ?? "0.0", sucess: sucess, fail: fail)
-        
+        Requester().getImagesFlickr(lat ?? "0.0", long ?? "0.0", 1, sucess: sucess, fail: fail)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

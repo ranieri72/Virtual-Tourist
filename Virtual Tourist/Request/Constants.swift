@@ -19,7 +19,7 @@ class Constants {
     static let url = "https://api.flickr.com/services/rest/?"
     static let photosSearch = "flickr.photos.search"
     static let accuracy = "11"
-    static let per_page = "10"
+    static let per_page = "15"
     static let format = "json"
     static let jsonCallback = "1"
     static let size = "m"
