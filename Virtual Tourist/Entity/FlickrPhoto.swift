@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ranieri. All rights reserved.
 //
 
-class Photo {
+class FlickrPhoto {
     
     init(json: [String:AnyObject]) {
         id = json["id"] as? String ?? ""

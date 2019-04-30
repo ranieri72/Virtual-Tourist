@@ -16,7 +16,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setupCell(photo: Photo) {
+    func setupCell(photo: FlickrPhoto) {
         func sucess(image: UIImage?) {
             imgPhoto.image = image
         }

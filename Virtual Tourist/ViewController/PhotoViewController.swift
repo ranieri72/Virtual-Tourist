@@ -18,7 +18,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     let cellIdentifier = "PhotoCollectionViewCell"
     
-    var photos: [Photo]!
+    var photos: [FlickrPhoto]!
     private var lat: String!
     private var long: String!
     private var page: Int = 2
@@ -59,7 +59,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     @IBAction func newCollection(_ sender: UIButton) {
         btnNewCollection.isEnabled = false
-        func sucess(photos: [Photo]) {
+        func sucess(photos: [FlickrPhoto]) {
             btnNewCollection.isEnabled = true
             page += 1
             self.photos = photos

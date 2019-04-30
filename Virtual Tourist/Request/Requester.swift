@@ -12,7 +12,7 @@ import SafariServices
 
 class Requester {
     
-    func getImagesFlickr(_ lat: String, _ long: String, _ page: Int, sucess: @escaping (_ photos: [Photo]) -> Void, fail: @escaping (_ msg: String) -> Void) {
+    func getImagesFlickr(_ lat: String, _ long: String, _ page: Int, sucess: @escaping (_ photos: [FlickrPhoto]) -> Void, fail: @escaping (_ msg: String) -> Void) {
         let url = getSearchUrl(lat, long, page)
         
         _ = Requester.oauthswift.client.get(
@@ -21,10 +21,10 @@ class Requester {
                 let json1 =  try! JSONSerialization.jsonObject(with: response.data, options: []) as? [String:AnyObject]
                 let json2 = json1?["photos"] as! [String:AnyObject]
                 let json3 = json2["photo"] as! [[String:AnyObject]]
-                var photos = [Photo]()
+                var photos = [FlickrPhoto]()
                 
                 for photoJson in json3 {
-                    let photo = Photo(json: photoJson)
+                    let photo = FlickrPhoto(json: photoJson)
                     photo.url = self.getPhotoUrl(photo)
                     photo.lat = lat
                     photo.long = long
@@ -71,7 +71,7 @@ class Requester {
         return url
     }
     
-    private func getPhotoUrl(_ photo: Photo) -> String {
+    private func getPhotoUrl(_ photo: FlickrPhoto) -> String {
         return String(format: Constants.urlPhoto, photo.farm, photo.server, photo.id, photo.secret, Constants.size)
     }
     
