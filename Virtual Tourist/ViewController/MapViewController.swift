@@ -105,23 +105,28 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        let lat = view.annotation?.coordinate.latitude.description
-        let long = view.annotation?.coordinate.longitude.description
+        let lat = view.annotation?.coordinate.latitude
+        let long = view.annotation?.coordinate.longitude
         
-        func sucess(photos: [FlickrPhoto]) {
-            performSegue(withIdentifier: viewControllerID, sender: photos)
+        let pin = Pin(context: dataController.viewContext)
+        pin.lat = Double(lat ?? 0.0)
+        pin.long = Double(long ?? 0.0)
+        
+        func sucess() {
+            performSegue(withIdentifier: viewControllerID, sender: pin)
         }
         func fail(msg: String) {
             presentAlertView(msg: msg)
         }
-        Requester().getImagesFlickr(lat ?? "0.0", long ?? "0.0", 1, sucess: sucess, fail: fail)
+        Requester().getImagesFlickr(context: dataController.viewContext, pin: pin, page: 1, sucess: sucess, fail: fail)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == viewControllerID {
             let view = segue.destination as! PhotoViewController
-            let photos = sender as! [FlickrPhoto]
-            view.photos = photos
+            let pin = sender as! Pin
+            view.pin = pin
+            view.dataController = dataController
         }
     }
 }

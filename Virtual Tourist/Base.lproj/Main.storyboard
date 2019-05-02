@@ -110,14 +110,9 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Photo Album" id="Qjf-Q4-STK">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="Y61-pG-e41">
+                                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="fd6-GR-Hwb">
                                             <connections>
-                                                <action selector="cancelPhotos:" destination="4vx-4j-yTB" id="N0d-HH-43k"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="fd6-GR-Hwb">
-                                            <connections>
-                                                <action selector="savePhotos:" destination="4vx-4j-yTB" id="f3H-XG-qeH"/>
+                                                <action selector="done:" destination="4vx-4j-yTB" id="h6C-qp-QyH"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>

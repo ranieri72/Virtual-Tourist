@@ -8,12 +8,13 @@
 
 import UIKit
 import OAuthSwift
+import CoreData
 import SafariServices
 
 class Requester {
     
-    func getImagesFlickr(_ lat: String, _ long: String, _ page: Int, sucess: @escaping (_ photos: [FlickrPhoto]) -> Void, fail: @escaping (_ msg: String) -> Void) {
-        let url = getSearchUrl(lat, long, page)
+    func getImagesFlickr(context: NSManagedObjectContext, pin: Pin, page: Int, sucess: @escaping () -> Void, fail: @escaping (_ msg: String) -> Void) {
+        let url = getSearchUrl(pin, page)
         
         _ = Requester.oauthswift.client.get(
             url,
@@ -21,16 +22,14 @@ class Requester {
                 let json1 =  try! JSONSerialization.jsonObject(with: response.data, options: []) as? [String:AnyObject]
                 let json2 = json1?["photos"] as! [String:AnyObject]
                 let json3 = json2["photo"] as! [[String:AnyObject]]
-                var photos = [FlickrPhoto]()
                 
                 for photoJson in json3 {
-                    let photo = FlickrPhoto(json: photoJson)
+                    let photo = Photo(json: photoJson, context: context)
                     photo.url = self.getPhotoUrl(photo)
-                    photo.lat = lat
-                    photo.long = long
-                    photos.append(photo)
+                    photo.pin = pin
+                    try? context.save()
                 }
-                sucess(photos)
+                sucess()
         },
             failure: { error in
                 print(error)
@@ -49,12 +48,12 @@ class Requester {
         }
     }
     
-    private func getSearchUrl(_ lat: String, _ long: String, _ page: Int) -> String {
+    private func getSearchUrl(_ pin: Pin, _ page: Int) -> String {
         var url = Constants.url
         
         var parameters = [String : String]()
-        parameters["lat"] = lat
-        parameters["lon"] = long
+        parameters["lat"] = String(pin.lat)
+        parameters["lon"] = String(pin.long)
         parameters["nojsoncallback"] = Constants.jsonCallback
         parameters["format"] = Constants.format
         parameters["method"] = Constants.photosSearch
@@ -71,8 +70,8 @@ class Requester {
         return url
     }
     
-    private func getPhotoUrl(_ photo: FlickrPhoto) -> String {
-        return String(format: Constants.urlPhoto, photo.farm, photo.server, photo.id, photo.secret, Constants.size)
+    private func getPhotoUrl(_ photo: Photo) -> String {
+        return String(format: Constants.urlPhoto, photo.farm, photo.server!, photo.id!, photo.secret!, Constants.size)
     }
     
     // MARK: OAuth Flickr

@@ -16,15 +16,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setupCell(photo: FlickrPhoto) {
-        func sucess(image: UIImage?) {
+    func setupCell(photo: Photo) {
+        if let image = photo.image as? UIImage {
             imgPhoto.image = image
         }
-        func fail(msg: String) {
-            
-        }
-        Requester().downloadImages(urlString: photo.url!, sucess: sucess, fail: fail)
-    
     }
-
 }
