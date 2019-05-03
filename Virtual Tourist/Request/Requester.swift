@@ -24,10 +24,7 @@ class Requester {
                 let json3 = json2["photo"] as! [[String:AnyObject]]
                 
                 for photoJson in json3 {
-                    let photo = Photo(json: photoJson, context: context)
-                    photo.url = self.getPhotoUrl(photo)
-                    photo.pin = pin
-                    try? context.save()
+                    self.savePhoto(photoJson, pin, context)
                 }
                 sucess()
         },
@@ -37,15 +34,29 @@ class Requester {
         )
     }
     
-    func downloadImages(urlString: String, sucess: @escaping (_ image: UIImage?) -> Void, fail: @escaping (_ msg: String) -> Void) {
-        let url = URL(string: urlString)
-        
+    private func savePhoto(_ json: [String: AnyObject], _ pin: Pin, _ context: NSManagedObjectContext) {
         DispatchQueue.global().async {
-            let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
-            DispatchQueue.main.async {
-                sucess(UIImage(data: data!))
+            let photo = Photo(json: json, context: context)
+            photo.url = self.getPhotoUrl(photo)
+            photo.image = self.downloadImages(photo: photo)
+            photo.pin = pin
+            
+            context.perform {
+                // FIXME: deve atualizar, e não salvar
+                try? context.save()
             }
         }
+    }
+    
+    private func downloadImages(photo: Photo) -> UIImage {
+        if let url = URL(string: photo.url ?? "") {
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    return image
+                }
+            }
+        }
+        return UIImage()
     }
     
     private func getSearchUrl(_ pin: Pin, _ page: Int) -> String {

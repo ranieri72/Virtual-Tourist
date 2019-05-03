@@ -20,17 +20,16 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     private let cellIdentifier = "PhotoCollectionViewCell"
     
     var dataController: DataController!
-    private var saveObserverToken: Any?
     private var fetchedResultsController: NSFetchedResultsController<Photo>!
     
     var pin: Pin!
     private var page: Int = 2
     
     fileprivate func setupFetchedResultsController() {
-        let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: "lat", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "\(pin)-photos")
@@ -43,16 +42,23 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
     }
     
+    // MARK: View
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //addSaveNotificationObserver()
         initView()
         configMap()
+        setupFetchedResultsController()
     }
     
-    //    deinit {
-    //        removeSaveNotificationObserver()
-    //    }
+    override func viewWillAppear(_ animated: Bool) {
+        setupFetchedResultsController()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
+    }
     
     func initView() {
         let space:CGFloat = 3.0
@@ -84,14 +90,13 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         mapView.setCamera(mapCamera, animated: false)
     }
     
+    // MARK: Button
+    
     @IBAction func newCollection(_ sender: UIButton) {
         btnNewCollection.isEnabled = false
         func sucess() {
             btnNewCollection.isEnabled = true
             page += 1
-            
-            
-            // FIXME:
             photoCollectionView.reloadData()
         }
         func fail(msg: String) {
@@ -105,58 +110,22 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         dismiss(animated: true, completion: nil)
     }
     
-    func savePhoto( _ photo: Photo) {
-        let backgroundContext: NSManagedObjectContext! = dataController?.backgroundContext
-        
-        let photoID = photo.objectID
-        
-        dataController?.backgroundContext.perform {
-            let backgroundPhoto = backgroundContext.object(with: photoID) as! Photo
-            backgroundPhoto.image = photo.image
-            try? backgroundContext.save()
-        }
-    }
-    
-    func downloadImages(photo: Photo) {
-        func sucess(image: UIImage?) {
-            photo.image = image
-            savePhoto(photo)
-        }
-        func fail(msg: String) {
-            
-        }
-        Requester().downloadImages(urlString: photo.url!, sucess: sucess, fail: fail)
-    }
+    // MARK: CollectionView
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.sections?[0].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let photo = photos[indexPath.row]
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! PhotoCollectionViewCell
-        
-        // FIXME:
         let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! PhotoCollectionViewCell
+        
         cell.setupCell(photo: photo)
         return cell
     }
 }
 
-//extension PhotoViewController {
-//
-//    func addSaveNotificationObserver() {
-//        removeSaveNotificationObserver()
-//        saveObserverToken = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: dataController?.viewContext, queue: nil, using: handleSaveNotification(notification:))
-//    }
-//
-//    func removeSaveNotificationObserver() {
-//        if let token = saveObserverToken {
-//            NotificationCenter.default.removeObserver(token)
-//        }
-//    }
-//}
+// MARK: Fetch
 
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
     

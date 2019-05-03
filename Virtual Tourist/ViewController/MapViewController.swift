@@ -108,10 +108,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let lat = view.annotation?.coordinate.latitude
         let long = view.annotation?.coordinate.longitude
         
-        let pin = Pin(context: dataController.viewContext)
-        pin.lat = Double(lat ?? 0.0)
-        pin.long = Double(long ?? 0.0)
+        let pins = fetchedResultsController?.fetchedObjects?.filter { $0.lat == lat && $0.long == long }
         
+        if pins != nil && !(pins?.isEmpty)! {
+            getImagesFlickr(pins![0])
+        }
+    }
+    
+    func getImagesFlickr( _ pin: Pin) {
         func sucess() {
             performSegue(withIdentifier: viewControllerID, sender: pin)
         }
