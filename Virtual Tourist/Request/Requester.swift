@@ -13,7 +13,13 @@ import SafariServices
 
 class Requester {
     
-    func getImagesFlickr(context: NSManagedObjectContext, pin: Pin, page: Int, sucess: @escaping () -> Void, fail: @escaping (_ msg: String) -> Void) {
+    let context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+    }
+    
+    func getImagesFlickr(pin: Pin, page: Int, sucess: @escaping () -> Void, fail: @escaping (_ msg: String) -> Void) {
         let url = getSearchUrl(pin, page)
         
         _ = Requester.oauthswift.client.get(
@@ -23,8 +29,10 @@ class Requester {
                 let json2 = json1?["photos"] as! [String:AnyObject]
                 let json3 = json2["photo"] as! [[String:AnyObject]]
                 
-                for photoJson in json3 {
-                    self.savePhoto(photoJson, pin, context)
+                DispatchQueue.global().async {
+                    for photoJson in json3 {
+                        self.savePhoto(photoJson, pin, self.context)
+                    }
                 }
                 sucess()
         },
@@ -35,16 +43,14 @@ class Requester {
     }
     
     private func savePhoto(_ json: [String: AnyObject], _ pin: Pin, _ context: NSManagedObjectContext) {
-        DispatchQueue.global().async {
-            let photo = Photo(json: json, context: context)
-            photo.url = self.getPhotoUrl(photo)
-            photo.image = self.downloadImages(photo: photo)
-            photo.pin = pin
-            
-            context.perform {
-                // FIXME: deve atualizar, e não salvar
-                try? context.save()
-            }
+        let photo = Photo(json: json, context: context)
+        photo.url = self.getPhotoUrl(photo)
+        photo.image = self.downloadImages(photo: photo)
+        photo.pin = pin
+        
+        context.perform {
+            // FIXME: deve atualizar, e não salvar
+            try? context.save()
         }
     }
     
@@ -70,6 +76,7 @@ class Requester {
         parameters["method"] = Constants.photosSearch
         parameters["accuracy"] = Constants.accuracy
         parameters["per_page"] = Constants.per_page
+        parameters["api_key"] = Constants.key
         parameters["page"] = String(page)
         
         for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {

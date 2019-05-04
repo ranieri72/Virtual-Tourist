@@ -20,6 +20,6 @@ class LoginViewController: OAuthViewController {
     }
     
     @IBAction func login(_ sender: UIButton) {
-        Requester().doOAuthFlickr(view: self)
+        //Requester().doOAuthFlickr(view: self)
     }
 }

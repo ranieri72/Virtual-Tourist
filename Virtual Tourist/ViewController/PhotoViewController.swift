@@ -32,7 +32,11 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "\(pin)-photos")
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: dataController.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: "\(pin)-photos")
         fetchedResultsController.delegate = self
         
         do {
@@ -103,7 +107,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
             btnNewCollection.isEnabled = true
             presentAlertView(msg: msg)
         }
-        Requester().getImagesFlickr(context: dataController.viewContext, pin: pin, page: page, sucess: sucess, fail: fail)
+        Requester(context: dataController.viewContext).getImagesFlickr(pin: pin, page: page, sucess: sucess, fail: fail)
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {

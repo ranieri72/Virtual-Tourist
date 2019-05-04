@@ -83,6 +83,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         pin.lat = geo.latitude
         pin.long = geo.longitude
         try? dataController.viewContext.save()
+        try? fetchedResultsController.performFetch()
     }
     
     func configMap() {
@@ -95,7 +96,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         var alt = UserDefaults.standard.double(forKey: "alt")
         var lat = UserDefaults.standard.double(forKey: "lat")
         var long = UserDefaults.standard.double(forKey: "long")
-        alt = alt == 0.0 ? 1000.0 : alt
+        alt = alt == 0.0 ? 14000000.0 : alt
         lat = lat == 0.0 ? -12.072204 : lat
         long = long == 0.0 ? -47.002209 : long
         
@@ -108,10 +109,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let lat = view.annotation?.coordinate.latitude
         let long = view.annotation?.coordinate.longitude
         
-        let pins = fetchedResultsController?.fetchedObjects?.filter { $0.lat == lat && $0.long == long }
-        
-        if pins != nil && !(pins?.isEmpty)! {
-            getImagesFlickr(pins![0])
+        if let pins = (fetchedResultsController?.fetchedObjects?.filter { $0.lat == lat && $0.long == long }) {
+            if !pins.isEmpty {
+                let pin = pins[0]
+                if (pin.photos?.allObjects.isEmpty)! {
+                    getImagesFlickr(pins[0])
+                } else {
+                    performSegue(withIdentifier: viewControllerID, sender: pin)
+                }
+            }
         }
     }
     
@@ -122,7 +128,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         func fail(msg: String) {
             presentAlertView(msg: msg)
         }
-        Requester().getImagesFlickr(context: dataController.viewContext, pin: pin, page: 1, sucess: sucess, fail: fail)
+        Requester(context: dataController.viewContext).getImagesFlickr(pin: pin, page: 1, sucess: sucess, fail: fail)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
