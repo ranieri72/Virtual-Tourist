@@ -30,13 +30,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             try fetchedResultsController.performFetch()
             fetchPin()
         } catch {
+            presentAlertView(msg: "Erro ao buscar os pinos!")
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupFetchedResultsController()
         configMap()
     }
     
@@ -82,8 +82,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let pin = Pin(context: dataController.viewContext)
         pin.lat = geo.latitude
         pin.long = geo.longitude
-        try? dataController.viewContext.save()
-        try? fetchedResultsController.performFetch()
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            presentAlertView(msg: "Pino não salvo!")
+        }
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            presentAlertView(msg: "Erro ao buscar os pinos!")
+        }
     }
     
     func configMap() {
@@ -117,6 +125,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 } else {
                     performSegue(withIdentifier: viewControllerID, sender: pin)
                 }
+            } else {
+                presentAlertView(msg: "Pino não salvo!")
             }
         }
     }

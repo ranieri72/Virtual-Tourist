@@ -11,7 +11,7 @@ import UIKit
 extension UIViewController {
     
     func presentAlertView(msg: String) {
-        let alert = UIAlertController(title: "Alert", message: msg, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Alerta", message: msg, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
             UIAlertAction in
             alert.dismiss(animated: true, completion: nil)

@@ -49,7 +49,6 @@ class Requester {
         photo.pin = pin
         
         context.perform {
-            // FIXME: deve atualizar, e não salvar
             try? context.save()
         }
     }

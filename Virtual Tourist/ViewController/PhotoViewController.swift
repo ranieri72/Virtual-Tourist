@@ -52,7 +52,6 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         super.viewDidLoad()
         initView()
         configMap()
-        setupFetchedResultsController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
