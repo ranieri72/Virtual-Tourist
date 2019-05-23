@@ -85,17 +85,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let pin = Pin(context: dataController.viewContext)
         pin.lat = geo.latitude
         pin.long = geo.longitude
-//        do {
-            dataController.viewContext.insert(pin)
-//            try dataController.viewContext.save()
-//        } catch {
-//            presentAlertView(msg: "Pino não salvo!")
-//        }
-//        do {
-//            try fetchedResultsController.performFetch()
-//        } catch {
-//            presentAlertView(msg: "Erro ao buscar os pinos!")
-//        }
+        dataController.viewContext.insert(pin)
     }
     
     func configMap() {
