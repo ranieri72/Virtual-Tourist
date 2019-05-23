@@ -38,6 +38,7 @@ class Requester {
         },
             failure: { error in
                 print(error)
+                fail(error.localizedDescription)
         }
         )
     }
@@ -53,15 +54,13 @@ class Requester {
         }
     }
     
-    private func downloadImages(photo: Photo) -> UIImage {
+    private func downloadImages(photo: Photo) -> Data {
         if let url = URL(string: photo.url ?? "") {
             if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    return image
-                }
+                return data
             }
         }
-        return UIImage()
+        return Data()
     }
     
     private func getSearchUrl(_ pin: Pin, _ page: Int) -> String {

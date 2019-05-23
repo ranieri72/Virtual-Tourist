@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import MapKit
 
-class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class PhotoViewController: UIViewController {
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var photoCollectionView: UICollectionView!
@@ -55,6 +55,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupFetchedResultsController()
     }
     
@@ -93,9 +94,23 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         mapView.setCamera(mapCamera, animated: false)
     }
     
+    func deletePhotos() {
+        let photos = fetchedResultsController.fetchedObjects
+        for item in photos! {
+            dataController.viewContext.delete(item)
+        }
+        try? dataController.viewContext.save()
+    }
+    
+    func deletePhoto(_ photo: NSManagedObject) {
+        dataController.viewContext.delete(photo)
+        try? dataController.viewContext.save()
+    }
+    
     // MARK: Button
     
     @IBAction func newCollection(_ sender: UIButton) {
+        deletePhotos()
         btnNewCollection.isEnabled = false
         func sucess() {
             btnNewCollection.isEnabled = true
@@ -112,9 +127,11 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     @IBAction func done(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
-    
-    // MARK: CollectionView
-    
+}
+
+// MARK: CollectionView
+
+extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.sections?[0].numberOfObjects ?? 0
     }
@@ -125,6 +142,11 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         cell.setupCell(photo: photo)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let photo = fetchedResultsController.object(at: indexPath)
+        deletePhoto(photo)
     }
 }
 

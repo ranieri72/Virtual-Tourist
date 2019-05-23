@@ -12,10 +12,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet var imgPhoto: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
     func setupCell(photo: Photo) {
         if let image = photo.image as? UIImage {
             imgPhoto.image = image

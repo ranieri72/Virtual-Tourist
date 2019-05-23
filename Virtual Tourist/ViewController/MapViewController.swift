@@ -24,8 +24,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let sortDescriptor = NSSortDescriptor(key: "lat", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pins")
-        fetchedResultsController.delegate = self
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: dataController.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: "pins")
         do {
             try fetchedResultsController.performFetch()
             fetchPin()
@@ -82,24 +85,25 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let pin = Pin(context: dataController.viewContext)
         pin.lat = geo.latitude
         pin.long = geo.longitude
-        do {
-            try dataController.viewContext.save()
-        } catch {
-            presentAlertView(msg: "Pino não salvo!")
-        }
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            presentAlertView(msg: "Erro ao buscar os pinos!")
-        }
+//        do {
+            dataController.viewContext.insert(pin)
+//            try dataController.viewContext.save()
+//        } catch {
+//            presentAlertView(msg: "Pino não salvo!")
+//        }
+//        do {
+//            try fetchedResultsController.performFetch()
+//        } catch {
+//            presentAlertView(msg: "Erro ao buscar os pinos!")
+//        }
     }
     
     func configMap() {
-        let uilgr = UILongPressGestureRecognizer(target: self, action: #selector(MKMapView.addAnnotation(_:)))
-        uilgr.minimumPressDuration = 1.0
+        let uiLongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(MKMapView.addAnnotation(_:)))
+        uiLongPressGestureRecognizer.minimumPressDuration = 1.0
         mapView.delegate = self
         mapView.mapType = MKMapType.standard
-        mapView.addGestureRecognizer(uilgr)
+        mapView.addGestureRecognizer(uiLongPressGestureRecognizer)
         
         var alt = UserDefaults.standard.double(forKey: "alt")
         var lat = UserDefaults.standard.double(forKey: "lat")
@@ -149,7 +153,4 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             view.dataController = dataController
         }
     }
-}
-
-extension MapViewController: NSFetchedResultsControllerDelegate {
 }
