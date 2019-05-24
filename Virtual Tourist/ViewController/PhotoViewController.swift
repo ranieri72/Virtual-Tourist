@@ -99,12 +99,19 @@ class PhotoViewController: UIViewController {
         for item in photos! {
             dataController.viewContext.delete(item)
         }
-        try? dataController.viewContext.save()
+        dataController.viewContext.perform {
+            try? self.dataController.viewContext.save()
+            self.photoCollectionView.reloadData()
+            _ = self.photoCollectionView.numberOfItems(inSection: 0)
+            self.requestImages()
+        }
     }
     
     func deletePhoto(_ photo: NSManagedObject) {
         dataController.viewContext.delete(photo)
-        try? dataController.viewContext.save()
+        dataController.viewContext.perform {
+            try? self.dataController.viewContext.save()
+        }
     }
     
     // MARK: Button
@@ -112,6 +119,15 @@ class PhotoViewController: UIViewController {
     @IBAction func newCollection(_ sender: UIButton) {
         deletePhotos()
         btnNewCollection.isEnabled = false
+    }
+    
+    @IBAction func done(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: Request
+    
+    func requestImages() {
         func sucess() {
             btnNewCollection.isEnabled = true
             page += 1
@@ -123,23 +139,22 @@ class PhotoViewController: UIViewController {
         }
         Requester(context: dataController.viewContext).getImagesFlickr(pin: pin, page: page, sucess: sucess, fail: fail)
     }
-    
-    @IBAction func done(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
 }
 
 // MARK: CollectionView
 
 extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchedResultsController.sections?[0].numberOfObjects ?? 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let photo = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! PhotoCollectionViewCell
-        
+        let photo = fetchedResultsController.object(at: indexPath)
         cell.setupCell(photo: photo)
         return cell
     }

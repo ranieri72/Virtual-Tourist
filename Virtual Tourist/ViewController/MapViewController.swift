@@ -29,13 +29,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             managedObjectContext: dataController.viewContext,
             sectionNameKeyPath: nil,
             cacheName: "pins")
-        do {
-            try fetchedResultsController.performFetch()
-            fetchPin()
-        } catch {
-            presentAlertView(msg: "Erro ao buscar os pinos!")
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-        }
+        updateMap()
     }
     
     override func viewDidLoad() {
@@ -58,10 +52,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         UserDefaults.standard.set(long, forKey: "long")
     }
     
-    func fetchPin() {
-        for pin in (fetchedResultsController?.fetchedObjects) ?? [Pin]() {
-            let coord = CLLocationCoordinate2D(latitude: pin.lat, longitude: pin.long)
-            addAnnotation(geo: coord)
+    func updateMap() {
+        do {
+            for item in mapView.annotations {
+                mapView.removeAnnotation(item)
+            }
+            try fetchedResultsController.performFetch()
+            for pin in (fetchedResultsController?.fetchedObjects) ?? [Pin]() {
+                let coord = CLLocationCoordinate2D(latitude: pin.lat, longitude: pin.long)
+                addAnnotation(geo: coord)
+            }
+        } catch {
+            presentAlertView(msg: "Erro ao buscar os pinos!")
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
     }
     
@@ -86,6 +89,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         pin.lat = geo.latitude
         pin.long = geo.longitude
         dataController.viewContext.insert(pin)
+        updateMap()
     }
     
     func configMap() {
@@ -115,7 +119,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if !pins.isEmpty {
                 let pin = pins[0]
                 if (pin.photos?.allObjects.isEmpty)! {
-                    getImagesFlickr(pins[0])
+                    getImagesFlickr(pin)
                 } else {
                     performSegue(withIdentifier: viewControllerID, sender: pin)
                 }

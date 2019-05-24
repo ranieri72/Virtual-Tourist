@@ -13,8 +13,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet var imgPhoto: UIImageView!
     
     func setupCell(photo: Photo) {
-        if let image = photo.image as? UIImage {
-            imgPhoto.image = image
+        if let imageData = photo.image {
+            imgPhoto.image = UIImage(data: imageData)
         }
     }
 }
