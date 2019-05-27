@@ -37,10 +37,10 @@ class PhotoViewController: UIViewController {
             managedObjectContext: dataController.viewContext,
             sectionNameKeyPath: nil,
             cacheName: "\(pin)-photos")
-        fetchedResultsController.delegate = self
         
         do {
             try fetchedResultsController.performFetch()
+            self.photoCollectionView.reloadData()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
@@ -102,7 +102,6 @@ class PhotoViewController: UIViewController {
         dataController.viewContext.perform {
             try? self.dataController.viewContext.save()
             self.photoCollectionView.reloadData()
-            _ = self.photoCollectionView.numberOfItems(inSection: 0)
             self.requestImages()
         }
     }
@@ -111,6 +110,7 @@ class PhotoViewController: UIViewController {
         dataController.viewContext.delete(photo)
         dataController.viewContext.perform {
             try? self.dataController.viewContext.save()
+            self.photoCollectionView.reloadData()
         }
     }
     
@@ -162,25 +162,5 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let photo = fetchedResultsController.object(at: indexPath)
         deletePhoto(photo)
-    }
-}
-
-// MARK: Fetch
-
-extension PhotoViewController: NSFetchedResultsControllerDelegate {
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .insert:
-            photoCollectionView.insertItems(at: [newIndexPath!])
-            break
-        case .delete:
-            photoCollectionView.deleteItems(at: [indexPath!])
-            break
-        case .update:
-            photoCollectionView.reloadItems(at: [indexPath!])
-        case .move:
-            photoCollectionView.moveItem(at: indexPath!, to: newIndexPath!)
-        }
     }
 }
