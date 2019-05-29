@@ -29,18 +29,18 @@ class PhotoViewController: UIViewController {
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.sortDescriptors = []
         
         fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: dataController.viewContext,
             sectionNameKeyPath: nil,
-            cacheName: "\(pin)-photos")
+            cacheName: nil)
+        
+        fetchedResultsController.delegate = self
         
         do {
             try fetchedResultsController.performFetch()
-            self.photoCollectionView.reloadData()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
@@ -98,20 +98,14 @@ class PhotoViewController: UIViewController {
         let photos = fetchedResultsController.fetchedObjects
         for item in photos! {
             dataController.viewContext.delete(item)
-        }
-        dataController.viewContext.perform {
             try? self.dataController.viewContext.save()
-            self.photoCollectionView.reloadData()
-            self.requestImages()
-        }
+        }   
+        self.requestImages()
     }
     
     func deletePhoto(_ photo: NSManagedObject) {
         dataController.viewContext.delete(photo)
-        dataController.viewContext.perform {
-            try? self.dataController.viewContext.save()
-            self.photoCollectionView.reloadData()
-        }
+        try? self.dataController.viewContext.save()
     }
     
     // MARK: Button
@@ -131,7 +125,6 @@ class PhotoViewController: UIViewController {
         func sucess() {
             btnNewCollection.isEnabled = true
             page += 1
-            photoCollectionView.reloadData()
         }
         func fail(msg: String) {
             btnNewCollection.isEnabled = true
@@ -149,7 +142,7 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -162,5 +155,24 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let photo = fetchedResultsController.object(at: indexPath)
         deletePhoto(photo)
+    }
+}
+
+// MARK: Fetch
+extension PhotoViewController: NSFetchedResultsControllerDelegate {
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            photoCollectionView.insertItems(at: [newIndexPath!])
+            break
+        case .delete:
+            photoCollectionView.deleteItems(at: [indexPath!])
+            break
+        case .update:
+            photoCollectionView.reloadItems(at: [indexPath!])
+        case .move:
+            photoCollectionView.moveItem(at: indexPath!, to: newIndexPath!)
+        }
     }
 }
