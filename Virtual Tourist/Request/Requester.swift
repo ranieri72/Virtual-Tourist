@@ -13,11 +13,7 @@ import SafariServices
 
 class Requester {
     
-    let context: NSManagedObjectContext
-    
-    init(context: NSManagedObjectContext) {
-        self.context = context
-    }
+    let context = DataController.shared.viewContext
     
     func getImagesFlickr(pin: Pin, page: Int, sucess: @escaping () -> Void, fail: @escaping (_ msg: String) -> Void) {
         let url = getSearchUrl(pin, page)

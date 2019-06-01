@@ -14,23 +14,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet var mapView: MKMapView!
     
-    var dataController: DataController!
     let viewControllerID = "photoVC"
     
     var fetchedResultsController: NSFetchedResultsController<Pin>!
-    
-    fileprivate func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "lat", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: dataController.viewContext,
-            sectionNameKeyPath: nil,
-            cacheName: "pins")
-        updateMap()
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,10 +71,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func savePin(geo: CLLocationCoordinate2D) {
-        let pin = Pin(context: dataController.viewContext)
+        let pin = Pin(context: DataController.shared.viewContext)
         pin.lat = geo.latitude
         pin.long = geo.longitude
-        dataController.viewContext.insert(pin)
+        DataController.shared.viewContext.insert(pin)
         updateMap()
     }
     
@@ -129,6 +115,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "lat", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: DataController.shared.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: "pins")
+        updateMap()
+    }
+    
     func getImagesFlickr( _ pin: Pin) {
         func sucess() {
             performSegue(withIdentifier: viewControllerID, sender: pin)
@@ -136,7 +135,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         func fail(msg: String) {
             presentAlertView(msg: msg)
         }
-        Requester(context: dataController.viewContext).getImagesFlickr(pin: pin, page: 1, sucess: sucess, fail: fail)
+        Requester().getImagesFlickr(pin: pin, page: 1, sucess: sucess, fail: fail)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -144,7 +143,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let view = segue.destination as! PhotoViewController
             let pin = sender as! Pin
             view.pin = pin
-            view.dataController = dataController
         }
     }
 }

@@ -10,18 +10,17 @@ import Foundation
 import CoreData
 
 class DataController {
-    
-    let persistentContainer:NSPersistentContainer
+    static let shared = DataController()
     
     var viewContext:NSManagedObjectContext {
         return persistentContainer.viewContext
     }
     
+    let persistentContainer:NSPersistentContainer
     let backgroundContext:NSManagedObjectContext!
     
-    init(modelName:String) {
-        persistentContainer = NSPersistentContainer(name: modelName)
-        
+    private init() {
+        persistentContainer = NSPersistentContainer(name: "VirtualTourist")
         backgroundContext = persistentContainer.newBackgroundContext()
     }
     

@@ -19,32 +19,10 @@ class PhotoViewController: UIViewController {
     
     private let cellIdentifier = "PhotoCollectionViewCell"
     
-    var dataController: DataController!
     private var fetchedResultsController: NSFetchedResultsController<Photo>!
     
     var pin: Pin!
     private var page: Int = 2
-    
-    fileprivate func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-        let predicate = NSPredicate(format: "pin == %@", pin)
-        fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = []
-        
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: dataController.viewContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        
-        fetchedResultsController.delegate = self
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-        }
-    }
     
     // MARK: View
     
@@ -94,18 +72,45 @@ class PhotoViewController: UIViewController {
         mapView.setCamera(mapCamera, animated: false)
     }
     
+    // MARK: CoreData
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = []
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: DataController.shared.viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
+    
+    func saveViewContext() {
+        try? DataController.shared.viewContext.save()
+    }
+    
     func deletePhotos() {
         let photos = fetchedResultsController.fetchedObjects
         for item in photos! {
-            dataController.viewContext.delete(item)
-            try? self.dataController.viewContext.save()
+            DataController.shared.viewContext.delete(item)
+            saveViewContext()
         }   
         self.requestImages()
     }
     
     func deletePhoto(_ photo: NSManagedObject) {
-        dataController.viewContext.delete(photo)
-        try? self.dataController.viewContext.save()
+        DataController.shared.viewContext.delete(photo)
+        saveViewContext()
     }
     
     // MARK: Button
@@ -130,7 +135,7 @@ class PhotoViewController: UIViewController {
             btnNewCollection.isEnabled = true
             presentAlertView(msg: msg)
         }
-        Requester(context: dataController.viewContext).getImagesFlickr(pin: pin, page: page, sucess: sucess, fail: fail)
+        Requester().getImagesFlickr(pin: pin, page: page, sucess: sucess, fail: fail)
     }
 }
 
@@ -160,7 +165,7 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
 
 // MARK: Fetch
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
-
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
